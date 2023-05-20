@@ -38,11 +38,14 @@ async function run() {
     });
 
     app.get("/mytoys/:email", async (req, res) => {
-      const result = await productCollection
-        .find({ email: req.params.email })
-        .sort({ price: 1 })
-        .toArray();
-      res.send(result);
+      const { email } = req.params;
+      try {
+        const result = await productCollection.find({ email }).toArray();
+        const sortedResult = result.sort((a, b) => a.price - b.price);
+        res.send(sortedResult);
+      } catch (error) {
+        res.status(500).send();
+      }
     });
 
     app.patch("/updatetoy/:id", async (req, res) => {
@@ -59,13 +62,12 @@ async function run() {
       res.send(result);
     });
 
-   app.delete("/mytoys/:id", async (req, res) => {
-     const id = req.params.id;
-     const query = { _id: new ObjectId(id) };
-     const result = await productCollection.deleteOne(query);
-     res.send(result);
-   });
-
+    app.delete("/mytoys/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await productCollection.deleteOne(query);
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
