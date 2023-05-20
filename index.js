@@ -45,6 +45,20 @@ async function run() {
       res.send(result);
     });
 
+    app.patch("/updatetoy/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          price: req.body.price,
+          available_quantity: req.body.available_quantity,
+          detail_description: req.body.detail_description,
+        },
+      };
+      const result = await productCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+
    app.delete("/mytoys/:id", async (req, res) => {
      const id = req.params.id;
      const query = { _id: new ObjectId(id) };
