@@ -25,24 +25,25 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
+    const productCollection = client.db("toyHaven").collection("products");
 
-    const productCollection = client.db('toyHaven').collection('products');
-
-    app.get('/products', async (req, res) => {
+    app.get("/products", async (req, res) => {
       const cursor = productCollection.find();
       const result = await cursor.toArray();
       res.send(result);
-      
-    })
+    });
     app.post("/addtoy", async (req, res) => {
       const result = await productCollection.insertOne(req.body);
       res.send(result);
     });
 
-    
-
-
-
+    app.get("/mytoys/:email", async (req, res) => {
+      const result = await productCollection
+        .find({ email: req.params.email })
+        .sort({ price: 1 })
+        .toArray();
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
