@@ -23,17 +23,13 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    client.connect();
 
     const productCollection = client.db("toyHaven").collection("products");
 
     app.get("/products", async (req, res) => {
       const cursor = productCollection.find();
       const result = await cursor.toArray();
-      res.send(result);
-    });
-    app.post("/addtoy", async (req, res) => {
-      const result = await productCollection.insertOne(req.body);
       res.send(result);
     });
 
@@ -46,6 +42,11 @@ async function run() {
       } catch (error) {
         res.status(500).send();
       }
+    });
+
+    app.post("/addtoy", async (req, res) => {
+      const result = await productCollection.insertOne(req.body);
+      res.send(result);
     });
 
     app.patch("/updatetoy/:id", async (req, res) => {
