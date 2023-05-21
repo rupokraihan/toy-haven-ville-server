@@ -32,7 +32,7 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     });
-
+    // filter with email and descending and ascending on the price.
     app.get("/mytoys/:email", async (req, res) => {
       const { email } = req.params;
       try {
@@ -43,12 +43,12 @@ async function run() {
         res.status(500).send();
       }
     });
-
+// Add any toy
     app.post("/addtoy", async (req, res) => {
       const result = await productCollection.insertOne(req.body);
       res.send(result);
     });
-
+    // update toy from my toys page
     app.patch("/updatetoy/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
@@ -62,7 +62,7 @@ async function run() {
       const result = await productCollection.updateOne(filter, updateDoc);
       res.send(result);
     });
-
+    //  delete toy from my toys page
     app.delete("/mytoys/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
